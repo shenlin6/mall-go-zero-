@@ -1,0 +1,59 @@
+syntax = "v1"
+
+info (
+	title:   "mall"
+	desc:    "go-zero学习项目"
+	author:  "shone"
+	email:   "@shone.com"
+	version: "1.0"
+)
+
+@server (
+	prefix: api
+)
+service user-api {
+	@handler SignupHandler
+	post /user/signup (SignupRequest) returns (SignupResponse)
+
+	@handler LoginHandler
+	post /user/login (LoginRequest) returns (LoginResponse)
+
+	@handler DetailHander
+	get /user/detail (Detailrequest) returns (Detailresponse)
+}
+
+// 1. 注册
+// 定义类型
+type SignupRequest {
+	UserName   string `json:"username"`
+	Password   string `json:"password"`
+	RePassword string `json:"re_password"`
+	Gender     int    `json:"gender,options=0|1|2,default=0"`
+}
+
+type SignupResponse {
+	Message string `json:"message"`
+}
+
+// 2.登录
+// 定义类型
+type LoginRequest {
+	UserName string `json:"username"`
+	Password string `json:"password"`
+}
+
+type LoginResponse {
+	Message string `json:"message"`
+}
+
+// 3.查看用户详情信息
+type Detailrequest {
+	UserID int `json:"user_id"`
+}
+
+type Detailresponse {
+	Message  string `json:"message"`
+	UserName string `json:"username"`
+	Gender   int    `json:"gender,options=0|1|2,default=0"`
+}
+
