@@ -5,10 +5,12 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"time"
 
 	"goctl-api/mall/service/user/api/internal/svc"
 	"goctl-api/mall/service/user/api/internal/types"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -45,10 +47,7 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	user, err := l.svcCtx.UserModel.FindOneByUsername(l.ctx, req.UserName)
 	if err != nil && err != sqlx.ErrNotFound {
 		logx.Errorf("user_login_UserModel.FindOneByUsername failed,err:%v\n", err)
-
-		return &types.LoginResponse{
-			Message: "用户名不存在",
-		}, errors.New("内部错误")
+		return nil, errors.New("内部错误")
 	}
 
 	if err == sqlx.ErrNotFound {
@@ -66,8 +65,33 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	}
 
 	// 2.2 如果一致--登陆成功
+
+	//生成JWT
+	now := time.Now().Unix()
+	expire := l.svcCtx.Config.Auth.AccessExpire
+	token, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, expire, user.UserId)
+	if err != nil {
+		logx.Errorw("l.getJwtToken failed", logx.Field("err", err))
+		return nil, errors.New("内部错误")
+	}
+
+	//显示登录成功
 	return &types.LoginResponse{
-		Message: "登陆成功",
+		Message:      "登陆成功",
+		AccessToken:  token,
+		AccessExpire: int(now + expire),
+		RefreshAfter: int(now + expire/2),
 	}, nil
 
+}
+
+// 生成JWT
+func (l *LoginLogic) getJwtToken(secretKey string, iat,seconds,userId int64) (string, error) {
+	claims := make(jwt.MapClaims)
+	claims["exp"] = iat + seconds
+	claims["iat"] = iat
+	claims["userid"] = userId
+	token := jwt.New(jwt.SigningMethodHS256)
+	token.Claims = claims
+	return token.SignedString([]byte(secretKey))
 }

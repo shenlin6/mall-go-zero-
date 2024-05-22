@@ -6,6 +6,7 @@ import (
 
 	"goctl-api/mall/service/user/api/internal/config"
 	"goctl-api/mall/service/user/api/internal/handler"
+	"goctl-api/mall/service/user/api/internal/middleware"
 	"goctl-api/mall/service/user/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -24,6 +25,11 @@ func main() {
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
+
+	//应用全局中间件
+	server.Use(middleware.CopyResp)
+	//server.Use(middleware.IsOpen(true))
+
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)

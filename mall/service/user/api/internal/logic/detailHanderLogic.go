@@ -29,7 +29,7 @@ func NewDetailHanderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Deta
 func (l *DetailHanderLogic) DetailHander(req *types.Detailrequest) (resp *types.Detailresponse, err error) {
 	// todo: add your logic here and delete this line
 	// 1.拿到用户传来的userID
-	user, err := l.svcCtx.UserModel.FindOneByUserId(l.ctx, int64(req.UserID))
+	user, err := l.svcCtx.UserModel.FindOneByUserId(l.ctx, req.UserID)
 	if err != nil { // 1.数据库查询失败 2.没查到userID
 		if err != sqlx.ErrNotFound {
 			logx.Errorf("user_detail_UserModel.FindOneByUserId failed,err:%#v\n", err)

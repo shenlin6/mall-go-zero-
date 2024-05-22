@@ -2,6 +2,10 @@ Name: user-api
 Host: 0.0.0.0
 Port: 8888
 
+Auth:
+  AccessSecret: 阿巴阿巴阿巴
+  AccessExpire: 3600
+
 Log:
   ServiceName: "user-srv"
   Mode: file
@@ -11,7 +15,7 @@ Log:
   Stat: true
 
 Mysql:
-  DataSource: root:wssl20050419.@tcp(127.0.0.1:3306)/db2?parseTime=true&
+  DataSource: root:wssl20050419.@tcp(127.0.0.1:3306)/db2?parseTime=true
 
 CacheRedis:
  - Host: 127.0.0.1:6379

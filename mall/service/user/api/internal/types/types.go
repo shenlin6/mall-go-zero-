@@ -2,7 +2,7 @@
 package types
 
 type Detailrequest struct {
-	UserID int `json:"user_id"`
+	UserID int64 `json:"user_id"`
 }
 
 type Detailresponse struct {
@@ -17,7 +17,10 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Message string `json:"message"`
+	Message      string `json:"message"`
+	AccessToken  string `json:"accesstoken"`
+	AccessExpire int    `json:"accessexpire"` //过期时间
+	RefreshAfter int    `json:"refreshafter"`
 }
 
 type SignupRequest struct {

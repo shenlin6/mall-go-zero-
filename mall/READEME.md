@@ -2,3 +2,5 @@
 
 # 首先切入到api目录
 # 输入指令： goctl api go -api user.api -dir . -style=goZero
+
+## 2. 生成rpc代码

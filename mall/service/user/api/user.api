@@ -8,20 +8,6 @@ info (
 	version: "1.0"
 )
 
-@server (
-	prefix: api
-)
-service user-api {
-	@handler SignupHandler
-	post /user/signup (SignupRequest) returns (SignupResponse)
-
-	@handler LoginHandler
-	post /user/login (LoginRequest) returns (LoginResponse)
-
-	@handler DetailHander
-	get /user/detail (Detailrequest) returns (Detailresponse)
-}
-
 // 1. 注册
 // 定义类型
 type SignupRequest {
@@ -43,17 +29,40 @@ type LoginRequest {
 }
 
 type LoginResponse {
-	Message string `json:"message"`
+	Message      string `json:"message"`
+	AccessToken  string `json:"accesstoken"`
+	AccessExpire int    `json:"accessexpire"` //过期时间
+	RefreshAfter int    `json:"refreshafter"`
 }
 
-// 3.查看用户详情信息
 type Detailrequest {
-	UserID int `json:"user_id"`
+	UserID int64 `json:"user_id"`
 }
 
 type Detailresponse {
 	Message  string `json:"message"`
 	UserName string `json:"username"`
 	Gender   int    `json:"gender,options=0|1|2,default=0"`
+}
+
+@server (
+	prefix: api
+)
+service user-api {
+	@handler SignupHandler
+	post /user/signup (SignupRequest) returns (SignupResponse)
+
+	@handler LoginHandler
+	post /user/login (LoginRequest) returns (LoginResponse)
+}
+
+@server (
+	prefix:     api
+	jwt:        Auth //添加JWT鉴权
+	middleware: Cost //添加自定义中间件（路由中间件）
+)
+service user-api {
+	@handler DetailHander
+	get /user/detail (Detailrequest) returns (Detailresponse)
 }
 
