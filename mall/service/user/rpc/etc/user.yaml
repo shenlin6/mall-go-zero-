@@ -1,0 +1,14 @@
+Name: user.rpc
+Mode: dev
+ListenOn: 0.0.0.0:8080
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: user.rpc
+
+Mysql:
+  DataSource: root:wssl20050419.@tcp(127.0.0.1:3306)/db2?parseTime=true
+
+CacheRedis:
+ - Host: 127.0.0.1:6379
+ 

@@ -1,0 +1,29 @@
+syntax = "v1"
+
+info (
+	title:   "mall-order"
+	desc:    "go-zero学习项目"
+	author:  "shone"
+	email:   "@shone.com"
+	version: "1.0"
+)
+
+type searchRequest {
+	OrderID string `form:"orderID"`
+}
+
+type searchResponse {
+	Message  string `json:"message"`
+	OrderID  string `json:"orderID"`
+	Username string `json:"username"`
+	Status   int    `json:"status"`
+}
+
+@server (
+	prefix: api
+)
+service order-api {
+	@handler searchHandler
+	get /order/search (searchRequest) returns (searchResponse)
+}
+
